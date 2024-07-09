@@ -1,23 +1,25 @@
 
 /*******************************************************************************
 ** Comentarios:
-** La idea de este script es comenzar una aplicacion para que se puedan crear
-** usuarios y esos usuarios puedan enviar mensajes siempre que sean mayores de
-** edad. Tambien se agregan un menu para el usuario y utilidades para mostrar
-** por consola la lista de usuarios y mensajes registrados.
-** En los casos donde se piden datos ingresados por teclado se verifica que el
-** usuario no haya dejado campos vacios antes de continuar.
-** Tambien se creo una funcion que cumpla la funcion de "capitalizar"
-** las palabras.
-** Mi objetivo final con esta pre entrega es poder generar un sistema para que
-** las personas puedan contactarse conmigo a través de mi portfolio personal.
+** 1. Mi objetivo final con esta pre entrega es poder generar un sistema para
+**    que las personas puedan contactarse conmigo a través de mi portfolio
+**    personal.
+** 2. La idea de este script es comenzar una aplicacion para que se puedan crear
+**    usuarios y esos usuarios puedan enviar mensajes siempre que sean mayores
+**    de edad.
+** 3. Se agregan un menu para el usuario y utilidades para mostrar por consola
+**    la lista de usuarios y mensajes registrados.
+** 4. En los casos donde se piden datos ingresados por teclado se verifica que
+**    el usuario no haya dejado campos vacios antes de continuar.
+** 5. Tambien se crea una funcion que cumpla la funcion de "capitalizar"
+**    las palabras.
 *******************************************************************************/
 
 /*******************************************************************************
 ** Variables globables
+** NOTA: En clase comentaron que NO era una buena practica tener variables
+**       globales. Voy a intentar dejar este espacio vacio
 *******************************************************************************/
-let users = []
-let contacts = []
 
 /*******************************************************************************
 ** Clases
@@ -29,6 +31,7 @@ class User {
         this.lastname = capitalize(lastname)
         this.age = age
         this.tel = tel
+        this.messages = []
         
         /* Genero el correo para el usuario */
         this.createUsername()
@@ -76,11 +79,6 @@ function capitalize(str) {
 /* Estas funciones la creo solo para ejercitar el uso de funciones con
 ** parametros.
 **/
-function calcYearBirdth(age) {
-    thisYear = 2024
-    return restar(thisYear, age)
-}
-
 function sumar(num1, num2) {
     if((typeof num1 !== 'number') || (typeof num2 !== 'number')) {
         console.log('Datos invalidos para la funcion sumar().')
@@ -97,10 +95,15 @@ function restar(num1, num2) {
     return num1 - num2
 }
 
+function calcYearBirdth(age) {
+    thisYear = 2024
+    return restar(thisYear, age)
+}
+
 /*******************************************************************************
 ** Funciones
 *******************************************************************************/
-function sendMessage()
+function sendMessage(users)
 {
     /* Mensaje de debug */
     console.log('Enviar un mensaje...')
@@ -109,7 +112,7 @@ function sendMessage()
     if(users.length <= 0)
     {
         alert('No hay usuarios registrados en la base de datos!')
-        return
+        return NaN
     }
     
     /* Variables de esta funcion */
@@ -149,7 +152,7 @@ function sendMessage()
     if (!found)
     {
         alert(`No se encontro al usuario [${username}] en la base de datos.`)
-        return
+        return NaN
     }
     
     /* Si el usuario es menor de edad, no puede enviar mensajes */
@@ -159,19 +162,24 @@ function sendMessage()
         alert(
             `El usuario [${user.username}] no esta habilitado para enviar mensajes ya que nacio en [${yearBirdth}].`
         )
-        return
+        return NaN
     }
     
     /* Solicito el mensaje a enviar */
     let message = String( prompt(`[${user.username}]. Ingrese su mensaje:`) )
     let contact = new Contact(user.username, user.email, user.tel, message)
     
-    /* Agrego el mensaje a lista de contactos y lo muestro en pantalla */
-    contacts.push(contact)
+    /* Guardo el mensaje en la lista de mensajes del usuario */
+    user.messages.push(message)
+    
+    /* Muestro por pantalla el mensaje. */
     console.log(contact)
+    
+    /* Devuelvo el mensaje */
+    return contact
 }
 
-function showMessages()
+function showMessages(contacts)
 {
     /* Mensaje de debug */
     console.log('Mostrar mensajes...')
@@ -209,15 +217,17 @@ function createUser()
         `Telefono: ${tel}\n`
     )
     
-    /* Creo el usuario y lo agrego a la lista */
+    /* Creo el usuario */
     let user = new User(name, surname, age, tel)
-    users.push(user)
     
     /* Mensaje de debug */
-    console.log('Usuario agregado con exito!.')
+    console.log('Usuario creado con exito!.')
+    
+    /* Devuelvo el usuario para que sea agregado en la lista */
+    return user
 }
 
-function showUsers()
+function showUsers(users)
 {
     /* Mensaje de debug */
     console.log('Mostrar usuarios...')
@@ -243,7 +253,15 @@ function main()
 {
     /* Variables propias de esta funcion*/
     let exit = false
-    let menuOption
+    let menuOption = NaN
+    let user = NaN
+    let contact = NaN
+    
+    /* Creo el objeto para los datos */
+    const database = {
+        users: [],
+        contacts: [],
+    }
     
     /* Bucle a ejecutar hasta que el usuario salga */
     while (exit === false)
@@ -272,16 +290,22 @@ function main()
         switch (menuOption)
         {
             case 1:
-                sendMessage()
+                contact = sendMessage(database.users)
+                if (contact) {
+                    database.contacts.push(contact)
+                }
                 break
             case 2:
-                showMessages()
+                showMessages(database.contacts)
                 break
             case 3:
-                createUser()
+                user = createUser()
+                if (user) {
+                    database.users.push(user)
+                }
                 break
             case 4:
-                showUsers()
+                showUsers(database.users)
                 break
             case 0:
                 exit = true
