@@ -270,9 +270,9 @@ function main()
         menuOption = prompt(
                     'Menu principal\n' +
                     '1. Enviar mensaje\n' +
-                    '2. Ver mensajes\n' +
+                    '2. Ver mensajes (consola)\n' +
                     '3. Crear usuario\n' +
-                    '4. Ver usuarios\n' +
+                    '4. Ver usuarios (consola)\n' +
                     '0. Salir\n'
                 )
 
