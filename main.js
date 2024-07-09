@@ -9,6 +9,8 @@
 ** usuario no haya dejado campos vacios antes de continuar.
 ** Tambien se creo una funcion que cumpla la funcion de "capitalizar"
 ** las palabras.
+** Mi objetivo final con esta pre entrega es poder generar un sistema para que
+** las personas puedan contactarse conmigo a través de mi portfolio personal.
 *******************************************************************************/
 
 /*******************************************************************************
@@ -29,14 +31,14 @@ class User {
         this.tel = tel
         
         /* Genero el correo para el usuario */
-        this.create_username()
+        this.createUsername()
         
         /* Verifico si el usuario es mayor de edad o no */
-        this.is_adult = this.check_adult_status()
+        this.isAdult = this.checkAdultStatus()
     }
     
     /* Funciones o metodos de la clase */
-    create_username() {
+    createUsername() {
         let arg1 = this.name.toLowerCase()[0]
         let arg2 = this.lastname.toLowerCase()
         this.username = `${arg1}${arg2}`
@@ -44,7 +46,7 @@ class User {
         this.email = `${this.username}@${extension}.com`
     }
     
-    check_adult_status() {
+    checkAdultStatus() {
         return this.age >= 18
     }
     
@@ -71,10 +73,34 @@ function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
 
+/* Estas funciones la creo solo para ejercitar el uso de funciones con
+** parametros.
+**/
+function calcYearBirdth(age) {
+    thisYear = 2024
+    return restar(thisYear, age)
+}
+
+function sumar(num1, num2) {
+    if((typeof num1 !== 'number') || (typeof num2 !== 'number')) {
+        console.log('Datos invalidos para la funcion sumar().')
+        return 0
+    }
+    return num1 + num2
+}
+
+function restar(num1, num2) {
+    if((typeof num1 !== 'number') || (typeof num2 !== 'number')) {
+        console.log('Datos invalidos para la funcion restar().')
+        return 0
+    }
+    return num1 - num2
+}
+
 /*******************************************************************************
 ** Funciones
 *******************************************************************************/
-function send_message()
+function sendMessage()
 {
     /* Mensaje de debug */
     console.log('Enviar un mensaje...')
@@ -127,10 +153,11 @@ function send_message()
     }
     
     /* Si el usuario es menor de edad, no puede enviar mensajes */
-    if (!user.is_adult)
+    if (!user.isAdult)
     {
+        yearBirdth = calcYearBirdth(user.age)
         alert(
-            `El usuario [${user.username}] no esta habilitado para enviar mensajes.`
+            `El usuario [${user.username}] no esta habilitado para enviar mensajes ya que nacio en [${yearBirdth}].`
         )
         return
     }
@@ -144,7 +171,7 @@ function send_message()
     console.log(contact)
 }
 
-function show_messages()
+function showMessages()
 {
     /* Mensaje de debug */
     console.log('Mostrar mensajes...')
@@ -163,7 +190,7 @@ function show_messages()
     }
 }
 
-function create_user()
+function createUser()
 {
     /* Mensaje de debug */
     console.log('Crear un usuario...')
@@ -190,7 +217,7 @@ function create_user()
     console.log('Usuario agregado con exito!.')
 }
 
-function show_users()
+function showUsers()
 {
     /* Mensaje de debug */
     console.log('Mostrar usuarios...')
@@ -216,13 +243,13 @@ function main()
 {
     /* Variables propias de esta funcion*/
     let exit = false
-    let user_opt
+    let menuOption
     
     /* Bucle a ejecutar hasta que el usuario salga */
     while (exit === false)
     {
         /* Le pido al usuario que ingrese una opcion */
-        user_opt = prompt(
+        menuOption = prompt(
                     'Menu principal\n' +
                     '1. Enviar mensaje\n' +
                     '2. Ver mensajes\n' +
@@ -232,28 +259,29 @@ function main()
                 )
 
         /* Verifico que el usuario no haya dejado el campo vacio */
-        if (!user_opt) {
+        if (!menuOption) {
             alert('Opcion incorrecta! Vuelva a intentarlo.')
+            /* Salto la iteracion del While */
             continue
         }
 
         /* Convertir la opción del usuario a número */
-        user_opt = Number(user_opt)
+        menuOption = Number(menuOption)
         
         /* Verifico a la accion a llevar a cabo segun la opcion ingresada */
-        switch (user_opt)
+        switch (menuOption)
         {
             case 1:
-                send_message()
+                sendMessage()
                 break
             case 2:
-                show_messages()
+                showMessages()
                 break
             case 3:
-                create_user()
+                createUser()
                 break
             case 4:
-                show_users()
+                showUsers()
                 break
             case 0:
                 exit = true
