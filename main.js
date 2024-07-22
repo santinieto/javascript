@@ -24,6 +24,17 @@
 /*******************************************************************************
 ** Clases
 *******************************************************************************/
+class IDGenerator {
+    constructor(base){
+        this.last_id = base
+    }
+    
+    get_next_id () {
+        this.last_id += 1
+        return this.last_id
+    }
+}
+
 class User {
     /* Constructor de la clase */
     constructor(name, lastname, age, tel) {
@@ -57,11 +68,13 @@ class User {
 
 class Contact {
     /* Constructor de la clase */
-    constructor(username, email, tel, message) {
+    constructor(id, username, email, tel, message) {
+        this.id = id
         this.username = username
         this.email = email
         this.tel = tel
         this.message = message
+        this.date = get_formatted_date()
     }
 }
 
@@ -74,6 +87,20 @@ function capitalize(str) {
         return ''
     }
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+}
+
+function get_formatted_date() {
+    const ahora = new Date();
+
+    // Obtener los componentes de la fecha y hora
+    const anio = ahora.getFullYear();
+    const mes = ahora.getMonth() + 1; // Los meses van de 0 a 11
+    const dia = ahora.getDate();
+    const horas = ahora.getHours();
+    const minutos = ahora.getMinutes();
+    const segundos = ahora.getSeconds();
+    
+    return `${anio}-${mes}-${dia}T${horas}:${minutos}:${segundos}`
 }
 
 /* Estas funciones la creo solo para ejercitar el uso de funciones con
@@ -103,7 +130,7 @@ function calcYearBirdth(age) {
 /*******************************************************************************
 ** Funciones
 *******************************************************************************/
-function sendMessage(users)
+function sendMessage(users, tmp_id)
 {
     /* Mensaje de debug */
     console.log('Enviar un mensaje...')
@@ -167,7 +194,7 @@ function sendMessage(users)
     
     /* Solicito el mensaje a enviar */
     let message = String( prompt(`[${user.username}]. Ingrese su mensaje:`) )
-    let contact = new Contact(user.username, user.email, user.tel, message)
+    let contact = new Contact(tmp_id, user.username, user.email, user.tel, message)
     
     /* Guardo el mensaje en la lista de mensajes del usuario */
     user.messages.push(message)
@@ -191,11 +218,89 @@ function showMessages(contacts)
         return
     }
     
-    /* Muestro los mensajes uno por uno */
-    for (let kk = 0 ; kk < contacts.length ; kk++) {
-        let contact = contacts[kk]
-        console.log(contact)
+    /* Sub menu de esta funcion */
+    let opt
+    while(!opt)
+    {
+        opt = Number(prompt(
+            'Elija una opcion\n' +
+            '1. Ver todos\n' +
+            '2. Ver los de un usuario'
+        ))
+        if(!opt)
+        {
+            alert('Ingrese una opcion valida para continuar!')
+        }
     }
+    
+    /* Ver todos los mensajes */
+    if(opt === 1)
+    {
+        msg = ''
+        contacts.forEach(contact => {
+            msg += `(${contact.id}) ${contact.username} [${contact.date}]: ${contact.message}\n`
+        });
+        alert(msg)
+    }
+    else if(opt === 2)
+    {
+        /* Solicito que se ingrese el usuario a filtrar */
+        let username
+        while(!username)
+        {
+            username = prompt('Ingrese el nombre de usuario')
+            if(!username)
+            {
+                alert('Ingrese un nombre de usuario para continuar!')
+            }
+        }
+        
+        /* Verifico que el usuario esta en la base de datos*/
+        const user_exists = contacts.find((contact) => contact.username === username)
+        
+        if(user_exists)
+        {
+            /* Filtro los mensajes que necesito */
+            const user_contacts = contacts.filter((contact) => contact.username === username);
+            
+            /* Creo la cadena para mostrar los mensajes */
+            msg = user_contacts.map(contact => `(${contact.id}) ${contact.username} [${contact.date}]: ${contact.message}`).join('\n')
+            alert(msg)
+        }
+        else {
+            alert('El usuario no existe o no ha enviado ningun mensaje.')
+        }
+        
+    }
+}
+
+function deleteMessages(contacts) {
+    /* Mensaje de debug */
+    console.log('Borrar mensajes...')
+    
+    /* Verifico que haya mensajes que mostrar */
+    if(contacts.length <= 0)
+    {
+        alert('No hay mensajes registrados en la base de datos!')
+        return
+    }
+    
+    /* Variables de esta funcion */
+    let message_id = Number(prompt('Ingrese el ID de mensaje a borrar'))
+    
+    /* Verifico que el ID del mensaje existe */
+    const msg_exists = contacts.find((contact) => contact.id === message_id)
+    
+    /* Si el mensaje existe, lo borro */
+    if(msg_exists) {
+        const indice = contacts.findIndex(contact => contact.id === message_id);
+        contacts.splice(indice, 1);
+        alert(`El mensaje con ID ${message_id} ha sido borrado con exito.`)
+    }
+    else {
+        alert(`El mensaje con ID ${message_id} no existe.`)
+    }
+    
 }
 
 function createUser()
@@ -263,6 +368,9 @@ function main()
         contacts: [],
     }
     
+    /* */
+    id_gen = new IDGenerator(10)
+    
     /* Bucle a ejecutar hasta que el usuario salga */
     while (exit === false)
     {
@@ -270,9 +378,10 @@ function main()
         menuOption = prompt(
                     'Menu principal\n' +
                     '1. Enviar mensaje\n' +
-                    '2. Ver mensajes (consola)\n' +
-                    '3. Crear usuario\n' +
-                    '4. Ver usuarios (consola)\n' +
+                    '2. Ver mensajes\n' +
+                    '3. Borrar mensajes\n' +
+                    '4. Crear usuario\n' +
+                    '5. Ver usuarios (consola)\n' +
                     '0. Salir\n'
                 )
 
@@ -290,7 +399,7 @@ function main()
         switch (menuOption)
         {
             case 1:
-                contact = sendMessage(database.users)
+                contact = sendMessage(database.users, id_gen.get_next_id())
                 if (contact) {
                     database.contacts.push(contact)
                 }
@@ -299,12 +408,15 @@ function main()
                 showMessages(database.contacts)
                 break
             case 3:
+                deleteMessages(database.contacts)
+                break
+            case 4:
                 user = createUser()
                 if (user) {
                     database.users.push(user)
                 }
                 break
-            case 4:
+            case 5:
                 showUsers(database.users)
                 break
             case 0:
