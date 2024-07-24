@@ -1,0 +1,47 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #F2D4C4;
+}
+
+.posts {
+    padding: 0px 30px;
+}
+
+.posts_header {
+    color: #7E4430;
+    text-align: center;
+    padding: 15px 0px;
+}
+
+.post__list {
+    list-style: none;
+}
+
+.post__list__item {
+    border: 3px solid #CB3326;
+    border-radius: 30px;
+    padding: 20px;
+    margin: 5px 0px;
+}
+
+.post__list__item__user {
+    color: #F56366;
+    margin: 10px 0px;
+    font-weight: bold;
+}
+
+.post__list__item__content {
+    color: #7E4430;
+    margin: 10px 0px;
+}
+
+.post__list__item__date {
+    color: #2099b2;
+    margin: 10px 0px;
+    text-align: end;
+}
