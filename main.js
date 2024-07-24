@@ -1,18 +1,25 @@
 
 /*******************************************************************************
 ** Comentarios:
-** 1. Mi objetivo final con esta pre entrega es poder generar un sistema para
-**    que las personas puedan contactarse conmigo a través de mi portfolio
-**    personal.
-** 2. La idea de este script es comenzar una aplicacion para que se puedan crear
-**    usuarios y esos usuarios puedan enviar mensajes siempre que sean mayores
-**    de edad.
-** 3. Se agregan un menu para el usuario y utilidades para mostrar por consola
-**    la lista de usuarios y mensajes registrados.
-** 4. En los casos donde se piden datos ingresados por teclado se verifica que
-**    el usuario no haya dejado campos vacios antes de continuar.
-** 5. Tambien se crea una funcion que cumpla la funcion de "capitalizar"
-**    las palabras.
+** 1. Mi objetivo final con esta pre entrega es poder generar un sistema similar
+**    a una red social en la cual los usuario puedan crear posts.
+** 2. Agregue nuevas funciones al menu.
+** 3. Lo que antes eran mensajes de usuarios ahora son posteos.
+** 4. Los posts generados se pueden filtrar por usuario y por fecha.
+** 5. Los postos SIEMPRE se muestran desde el mas reciente en orden descendente.
+**    - Los ordeno cuando los muestros, el array original se mantiene tal cual.
+** 6. Se agrego la funcionalidad para crear datos de prueba y omitr la parte
+**    que fue expuesta en la primer pre entrega.
+** 7. Se agregaron funciones de utilidad tales como filtros, metodos de
+**    ordenamiento, generadores de IDs, etc.
+** 9. Se agrego un breve contenido HTML para mostrar los posteos cuando los
+**    usuarios finalizan el ciclo while principal de la aplicacion.
+**
+** Trabajo futuro:
+** 1. Implementar funciones para editar posteos.
+** 2. Mostrar el nombre de la persona en lugar del nombre de usuario cuando voy
+**    a generar el contenido HTML.
+** 3. Agregar imagenes a los objetos tipo post y mostrarlas.
 *******************************************************************************/
 
 /*******************************************************************************
@@ -42,7 +49,7 @@ class User {
         this.lastname = capitalize(lastname)
         this.age = age
         this.tel = tel
-        this.messages = []
+        this.posts = []
         
         /* Genero el correo para el usuario */
         this.createUsername()
@@ -66,15 +73,15 @@ class User {
     
 }
 
-class Contact {
+class Post {
     /* Constructor de la clase */
-    constructor(id, username, email, tel, message) {
+    constructor(id, username, email, tel, content) {
         this.id = id
         this.username = username
         this.email = email
         this.tel = tel
-        this.message = message
-        this.date = get_formatted_date()
+        this.content = content
+        this.date = new Date(); // Guarda la fecha como un objeto Date
     }
 }
 
@@ -89,18 +96,50 @@ function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
 
-function get_formatted_date() {
-    const ahora = new Date();
-
+function get_formatted_date(date) {
     // Obtener los componentes de la fecha y hora
-    const anio = ahora.getFullYear();
-    const mes = ahora.getMonth() + 1; // Los meses van de 0 a 11
-    const dia = ahora.getDate();
-    const horas = ahora.getHours();
-    const minutos = ahora.getMinutes();
-    const segundos = ahora.getSeconds();
+    const anio = date.getFullYear();
+    const mes = date.getMonth() + 1; // Los meses van de 0 a 11
+    const dia = date.getDate();
+    const horas = date.getHours();
+    const minutos = date.getMinutes();
+    const segundos = date.getSeconds();
     
     return `${anio}-${mes}-${dia}T${horas}:${minutos}:${segundos}`
+}
+
+function sort_posts(posts, property, dir) {
+    // Ordeno los posts por fecha
+    let arrayCopia = posts.map((el) => el)
+    if(dir === 'asc') {
+        return arrayCopia.sort((a,b) => {
+            if(a[property] > b[property]) {
+                return 1
+            }
+            else if(a[property] < b[property]) {
+                return -1
+            }
+            else {
+                return 0
+            }
+        })
+    }
+    else if(dir === 'desc') {
+        return arrayCopia.sort((a,b) => {
+            if(a[property] > b[property]) {
+                return -1
+            }
+            else if(a[property] < b[property]) {
+                return 1
+            }
+            else {
+                return 0
+            }
+        })
+    }
+    else {
+        return arrayCopia
+    }
 }
 
 /* Estas funciones la creo solo para ejercitar el uso de funciones con
@@ -128,14 +167,50 @@ function calcYearBirdth(age) {
 }
 
 /*******************************************************************************
-** Funciones
+** Funciones sobre el HTML
 *******************************************************************************/
-function sendMessage(users, tmp_id)
+function update_posts_list(posts) {
+    /* Funcion para mostrar los posts en pantalla */
+    /* NOTA: Los posts no se van a mostrar en la pantall hasta que no salgamos
+    ** del ciclo while principal
+    **/
+    
+    /* Busco el elemento HTML que contiene la lista de posts */
+    let posts_list = document.getElementsByClassName('post__list')[0];
+    
+    /* Muestro el elemento HTML actual en consola */
+    console.dir(posts_list)
+    
+    /* Borro el contenido HTML interno */
+    posts_list.innerHTML = ''
+    
+    /* Asigno el nuevo contenido HTML */
+    posts.forEach( post => {
+        posts_list.innerHTML += `
+        <li class="post__list__item">
+            <div class="post__list__item__user">
+                <h3>${post.username}</h3>
+            </div>
+            <div class="post__list__item__content">
+                <p>${post.content}</p>
+            </div>
+            <div class="post__list__item__date">
+                <p>${get_formatted_date(post.date)}</p>
+            </div>
+        </li>
+        `
+    })
+}
+
+/*******************************************************************************
+** Funciones de backend
+*******************************************************************************/
+function createPost(users, tmp_id)
 {
     /* Mensaje de debug */
-    console.log('Enviar un mensaje...')
+    console.log('Crear post...')
     
-    /* Verifico que haya usuarios registrados para mandar mensajes */
+    /* Verifico que haya usuarios registrados para crear posts */
     if(users.length <= 0)
     {
         alert('No hay usuarios registrados en la base de datos!')
@@ -182,41 +257,44 @@ function sendMessage(users, tmp_id)
         return NaN
     }
     
-    /* Si el usuario es menor de edad, no puede enviar mensajes */
+    /* Si el usuario es menor de edad, no puede crear posts */
     if (!user.isAdult)
     {
         yearBirdth = calcYearBirdth(user.age)
         alert(
-            `El usuario [${user.username}] no esta habilitado para enviar mensajes ya que nacio en [${yearBirdth}].`
+            `El usuario [${user.username}] no esta habilitado para crear posts ya que nacio en [${yearBirdth}].`
         )
         return NaN
     }
     
-    /* Solicito el mensaje a enviar */
-    let message = String( prompt(`[${user.username}]. Ingrese su mensaje:`) )
-    let contact = new Contact(tmp_id, user.username, user.email, user.tel, message)
+    /* Solicito el elemento Post a crear */
+    let content = String( prompt(`[${user.username}]. Contenido:`) )
+    let post = new Post(tmp_id, user.username, user.email, user.tel, content)
     
-    /* Guardo el mensaje en la lista de mensajes del usuario */
-    user.messages.push(message)
+    /* Guardo el post en la lista de posts del usuario */
+    user.posts.push(post)
     
-    /* Muestro por pantalla el mensaje. */
-    console.log(contact)
+    /* Muestro por consola el post. */
+    console.log(post)
     
-    /* Devuelvo el mensaje */
-    return contact
+    /* Devuelvo el objeto tipo Post */
+    return post
 }
 
-function showMessages(contacts)
+function showPosts(posts)
 {
     /* Mensaje de debug */
-    console.log('Mostrar mensajes...')
+    console.log('Mostrar posts...')
     
-    /* Verifico que haya mensajes que mostrar */
-    if(contacts.length <= 0)
+    /* Verifico que haya posts que mostrar */
+    if(posts.length <= 0)
     {
-        alert('No hay mensajes registrados en la base de datos!')
+        alert('No hay posts registrados en la base de datos!')
         return
     }
+    
+    /* Ordeno los posts por fecha */
+    let sorted_posts = sort_posts(posts, 'date', 'desc')
     
     /* Sub menu de esta funcion */
     let opt
@@ -225,7 +303,8 @@ function showMessages(contacts)
         opt = Number(prompt(
             'Elija una opcion\n' +
             '1. Ver todos\n' +
-            '2. Ver los de un usuario'
+            '2. Filtrar por usuario\n' +
+            '3. Filtrar por fecha'
         ))
         if(!opt)
         {
@@ -233,15 +312,20 @@ function showMessages(contacts)
         }
     }
     
-    /* Ver todos los mensajes */
+    /* Ver todos los posts */
     if(opt === 1)
     {
         msg = ''
-        contacts.forEach(contact => {
-            msg += `(${contact.id}) ${contact.username} [${contact.date}]: ${contact.message}\n`
+        sorted_posts.forEach(post => {
+            msg += `(${post.id}) ${post.username} [${get_formatted_date(post.date)}]: ${post.content}\n`
         });
         alert(msg)
+        
+        /* Actualizo el contenido HTML*/
+        update_posts_list(sorted_posts)
     }
+    
+    /* Filtrar por usuario */
     else if(opt === 2)
     {
         /* Solicito que se ingrese el usuario a filtrar */
@@ -249,6 +333,8 @@ function showMessages(contacts)
         while(!username)
         {
             username = prompt('Ingrese el nombre de usuario')
+            
+            /* Verifico datos validos */
             if(!username)
             {
                 alert('Ingrese un nombre de usuario para continuar!')
@@ -256,49 +342,97 @@ function showMessages(contacts)
         }
         
         /* Verifico que el usuario esta en la base de datos*/
-        const user_exists = contacts.find((contact) => contact.username === username)
+        const user_exists = sorted_posts.find((post) => post.username === username)
         
         if(user_exists)
         {
-            /* Filtro los mensajes que necesito */
-            const user_contacts = contacts.filter((contact) => contact.username === username);
+            /* Filtro los posts que necesito */
+            const user_posts = sorted_posts.filter((post) => post.username === username);
             
-            /* Creo la cadena para mostrar los mensajes */
-            msg = user_contacts.map(contact => `(${contact.id}) ${contact.username} [${contact.date}]: ${contact.message}`).join('\n')
+            /* Creo la cadena para mostrar los posts */
+            msg = user_posts.map(post => `(${post.id}) ${post.username} [${get_formatted_date(post.date)}]: ${post.content}`).join('\n')
             alert(msg)
+        
+            /* Actualizo el contenido HTML*/
+            update_posts_list(user_posts)
         }
         else {
-            alert('El usuario no existe o no ha enviado ningun mensaje.')
+            alert('El usuario no existe o no ha posteado nada aún.')
         }
         
     }
+    
+    /* Filtrar por fecha */
+    else if(opt === 3)
+    {
+        /* Solicito que se ingrese el usuario a filtrar */
+        let date
+        let data
+        while(!date)
+        {
+            date = prompt('Ingrese la fecha (YYYY-MM-DD)')
+        
+            /* Obtengo los datos */
+            data = date.split('-')
+            
+            /* Verifico datos validos */
+            if(!date || data.length < 3)
+            {
+                alert('Ingrese una fecha validad para continuar!')
+            }
+        }
+        
+        /* Codifico el dia, mes y anio */
+        const year = Number(data[0])
+        const month = Number(data[1])
+        const day = Number(data[2])
+        
+        /* Filtro los posts que necesito */
+        const filt_posts = sorted_posts.filter((post) => {
+            return post.date.getFullYear() === year &&
+                    (post.date.getMonth() + 1) === month &&
+                    post.date.getDate() === day;
+        });
+        
+        if(filt_posts.length > 0) {
+            /* Creo la cadena para mostrar los posts */
+            msg = filt_posts.map(post => `(${post.id}) ${post.username} [${get_formatted_date(post.date)}]: ${post.content}`).join('\n')
+            alert(msg)
+            
+            /* Actualizo el contenido HTML*/
+            update_posts_list(filt_posts)
+        }
+        else {
+            alert('No hay posteos en la fecha seleccionada!.')
+        }
+    }
 }
 
-function deleteMessages(contacts) {
+function deletePosts(posts) {
     /* Mensaje de debug */
-    console.log('Borrar mensajes...')
+    console.log('Borrar posts...')
     
     /* Verifico que haya mensajes que mostrar */
-    if(contacts.length <= 0)
+    if(posts.length <= 0)
     {
-        alert('No hay mensajes registrados en la base de datos!')
+        alert('No hay posts registrados en la base de datos!')
         return
     }
     
     /* Variables de esta funcion */
-    let message_id = Number(prompt('Ingrese el ID de mensaje a borrar'))
+    let post_id = Number(prompt('Ingrese el ID del post a borrar'))
     
-    /* Verifico que el ID del mensaje existe */
-    const msg_exists = contacts.find((contact) => contact.id === message_id)
+    /* Verifico que el ID del post existe */
+    const msg_exists = posts.find((post) => post.id === post_id)
     
-    /* Si el mensaje existe, lo borro */
+    /* Si el post existe, lo borro */
     if(msg_exists) {
-        const indice = contacts.findIndex(contact => contact.id === message_id);
-        contacts.splice(indice, 1);
-        alert(`El mensaje con ID ${message_id} ha sido borrado con exito.`)
+        const indice = posts.findIndex(post => post.id === post_id);
+        posts.splice(indice, 1);
+        alert(`El post con ID ${post_id} ha sido borrado con exito.`)
     }
     else {
-        alert(`El mensaje con ID ${message_id} no existe.`)
+        alert(`El post con ID ${post_id} no existe.`)
     }
     
 }
@@ -351,6 +485,62 @@ function showUsers(users)
     }
 }
 
+function generateTestData(database) {
+    /* Genero usuarios de prueba */
+    test_users = [
+        {name: 'Santiago', surname: 'Nieto',     age: 29, tel: 3512647957},
+        {name: 'Juan',     surname: 'Perez',     age: 22, tel: 1234567089},
+        {name: 'Pedro',    surname: 'Rodriguez', age: 12, tel: 2345067890},
+        {name: 'Lara',     surname: 'Suarez',    age: 15, tel: 3405678901},
+        {name: 'Ana',      surname: 'Lopez',     age: 25, tel: 4567891203},
+    ]
+    
+    for (let index = 0; index < test_users.length; index++) {
+        const element = test_users[index];
+        
+        /* Creo el usuario */
+        let user = new User(element.name, element.surname, element.age, element.tel)
+        
+        /* Agrego el usuario a la base de datos*/
+        if (user) {
+            database.users.push(user)
+        }
+        
+    }
+    
+    /* Genero mensajes de prueba */
+    /* NOTA: Lo ideal seria que los indices los genere el generador
+    ** que cree mas arriba pero estos son solo datos de prueba
+    **/
+    test_posts = [
+        {id: 1000, username: 'snieto',  email: 'snieto@hotmail.com', tel: 3512647957, content: 'Mensaje de prueba 1', date: '2024-01-01T10:06:20'},
+        {id: 1001, username: 'jperez',  email: 'jperez@hotmail.com', tel: 1234567089, content: 'Mensaje de prueba 2', date: '2024-03-21T11:03:10'},
+        {id: 1002, username: 'nieto',   email: 'nieto@hotmail.com',  tel: 3512647957, content: 'Mensaje de prueba 3', date: '2024-08-08T12:44:00'},
+        {id: 1003, username: 'alopez',  email: 'alopez@hotmail.com', tel: 3405678901, content: 'Mensaje de prueba 4', date: '2024-07-25T17:00:10'},
+        {id: 1004, username: 'alopez',  email: 'alopez@hotmail.com', tel: 4567891203, content: 'Mensaje de prueba 5', date: '2024-01-01T20:35:56'},
+    ]
+    
+    for (let index = 0; index < test_posts.length; index++) {
+        const element = test_posts[index];
+        
+        /* Creo el usuario */
+        let post = new Post(element.id, element.username, element.email, element.tel, element.content)
+        
+        /* Asigno la fecha personalizada al mensaje */
+        /* NOTA: Busque en Google como hacer esto */
+        post.date = new Date(element.date)
+        
+        /* Agrego el usuario a la base de datos*/
+        if (post) {
+            database.posts.push(post)
+        }
+        
+    }
+    
+    alert('Datos de prueba generados correctamente.')
+    
+}
+
 /*******************************************************************************
 ** Bucle principal
 *******************************************************************************/
@@ -360,12 +550,12 @@ function main()
     let exit = false
     let menuOption = NaN
     let user = NaN
-    let contact = NaN
+    let post = NaN
     
     /* Creo el objeto para los datos */
     const database = {
         users: [],
-        contacts: [],
+        posts: [],
     }
     
     /* */
@@ -377,11 +567,12 @@ function main()
         /* Le pido al usuario que ingrese una opcion */
         menuOption = prompt(
                     'Menu principal\n' +
-                    '1. Enviar mensaje\n' +
-                    '2. Ver mensajes\n' +
-                    '3. Borrar mensajes\n' +
+                    '1. Postear\n' +
+                    '2. Ver posts\n' +
+                    '3. Borrar posts\n' +
                     '4. Crear usuario\n' +
-                    '5. Ver usuarios (consola)\n' +
+                    '5. Ver usuarios (Salida por consola)\n' +
+                    '6. Generar datos de prueba\n' +
                     '0. Salir\n'
                 )
 
@@ -399,16 +590,16 @@ function main()
         switch (menuOption)
         {
             case 1:
-                contact = sendMessage(database.users, id_gen.get_next_id())
-                if (contact) {
-                    database.contacts.push(contact)
+                post = createPost(database.users, id_gen.get_next_id())
+                if (post) {
+                    database.posts.push(post)
                 }
                 break
             case 2:
-                showMessages(database.contacts)
+                showPosts(database.posts)
                 break
             case 3:
-                deleteMessages(database.contacts)
+                deletePosts(database.posts)
                 break
             case 4:
                 user = createUser()
@@ -418,6 +609,9 @@ function main()
                 break
             case 5:
                 showUsers(database.users)
+                break
+            case 6:
+                generateTestData(database)
                 break
             case 0:
                 exit = true
