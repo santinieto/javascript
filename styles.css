@@ -1,19 +1,170 @@
+/*******************************************************************************
+** GENERAL 
+*******************************************************************************/
 * {
     padding: 0;
     margin: 0;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
-    background-color: #F2D4C4;
+html {
+    background-color: #333333;
 }
 
-.posts {
-    padding: 0px 30px;
+header {
+    background-color: #333333;
 }
 
-.posts_header {
-    color: #7E4430;
+main {
+    background-color: #333333;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/*******************************************************************************
+** Barra de navegacion 
+*******************************************************************************/
+.nav-bar {
+    background-color: rgba(30, 30, 30);
+    border-bottom: 2px solid black;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    margin-bottom: 20px;
+}
+
+.nav-bar-list {
+    display: flex;
+    list-style: none;
+    column-gap: 30px;
+    width: 90%;
+    align-items: end;
+    padding: 20px;
+}
+
+.nav-button {
+    color: white;
+    border: none;
+    background-color: red;
+    font-weight: bold;
+    padding: 15px;
+    min-width: 130px;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.nav-button:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 19px -7px rgba(255,255,255,1);
+}
+
+.nav-bar__search {
+    height: 30px;
+    background-color: rgba(30, 30, 30);
+    border: none;
+    border-bottom: 2px solid red;
+    color: rgb(187, 187, 187);
+    outline: none;
+    padding: 8px;
+    width: 200px;
+    margin-left: 30px;
+}
+
+/*******************************************************************************
+** FORMULARIOS 
+*******************************************************************************/
+#login-div,
+#create-user-div,
+#create-post-div,
+#delete-post-div {
+    border: 2px solid black;
+    border-radius: 30px;
+    background-color: rgb(31, 31, 31);
+    display: flex;
+    padding: 30px;
+    color: white;
+    width: 400px;
+    height: 100%;
+    justify-content: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.form__header {
+    margin-bottom: 25px;
+}
+
+.form__field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0px 0px 30px 0px;
+}
+
+.form__field__label {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.form__text {
+    height: 30px;
+    background-color: rgb(31, 31, 31);
+    border: none;
+    border-bottom: 2px solid red;
+    color: rgb(187, 187, 187);
+    outline: none;
+}
+
+.form__btns {
+    /* display: grid;
+    column-gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr); */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.form__button {
+    width: 45%;
+    height: 50px;
+    border: none;
+    border-radius: 30px;
+    margin: 10px 5px 10px 5px;
+    background-color: red;
+    color: white;
+    font-weight: bold;
+}
+
+.form__button:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 19px -7px rgba(255,255,255,1);
+}
+
+/*******************************************************************************
+** POSTS 
+*******************************************************************************/
+#posts-div {
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 30px;
+    background-color: rgb(31, 31, 31);
+    padding: 30px;
+    color: white;
+    width: 80%;
+}
+
+.posts-header {
+    color: white;
     text-align: center;
     padding: 15px 0px;
 }
@@ -23,25 +174,25 @@ body {
 }
 
 .post__list__item {
-    border: 3px solid #CB3326;
+    border: 2px solid red;
     border-radius: 30px;
     padding: 20px;
-    margin: 5px 0px;
+    margin: 10px 0px;
 }
 
 .post__list__item__user {
-    color: #F56366;
+    color: white;
     margin: 10px 0px;
     font-weight: bold;
 }
 
 .post__list__item__content {
-    color: #7E4430;
+    color: white;
     margin: 10px 0px;
 }
 
 .post__list__item__date {
-    color: #2099b2;
+    color: red;
     margin: 10px 0px;
     text-align: end;
 }
