@@ -8,15 +8,15 @@
 }
 
 html {
-    background-color: #333333;
+    background-color: #d9e0e5;
 }
 
 header {
-    background-color: #333333;
+    background-color: #d9e0e5;
 }
 
 main {
-    background-color: #333333;
+    background-color: #d9e0e5;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -32,8 +32,8 @@ main {
 ** Barra de navegacion 
 *******************************************************************************/
 .nav-bar {
-    background-color: rgba(30, 30, 30);
-    border-bottom: 2px solid black;
+    background-color: #a0c0d9;
+    border-bottom: 2px solid #FFAA5E;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
     margin-bottom: 20px;
@@ -49,9 +49,9 @@ main {
 }
 
 .nav-button {
-    color: white;
+    color: #3A3A3A;
     border: none;
-    background-color: red;
+    background-color: #FFAA5E;
     font-weight: bold;
     padding: 15px;
     min-width: 130px;
@@ -66,10 +66,10 @@ main {
 
 .nav-bar__search {
     height: 30px;
-    background-color: rgba(30, 30, 30);
+    background-color: #a0c0d9;
     border: none;
-    border-bottom: 2px solid red;
-    color: rgb(187, 187, 187);
+    border-bottom: 2px solid #FFAA5E;
+    color: #3A3A3A;
     outline: none;
     padding: 8px;
     width: 200px;
@@ -83,12 +83,12 @@ main {
 #create-user-div,
 #create-post-div,
 #delete-post-div {
-    border: 2px solid black;
+    border: 2px solid #FFAA5E;
     border-radius: 30px;
-    background-color: rgb(31, 31, 31);
+    background-color: #a0b8d9;
     display: flex;
     padding: 30px;
-    color: white;
+    color: #3A3A3A;
     width: 400px;
     height: 100%;
     justify-content: center;
@@ -118,10 +118,10 @@ main {
 
 .form__text {
     height: 30px;
-    background-color: rgb(31, 31, 31);
+    background-color: #a0c0d9;
     border: none;
-    border-bottom: 2px solid red;
-    color: rgb(187, 187, 187);
+    border-bottom: 2px solid #FFAA5E;
+    color: #3A3A3A;
     outline: none;
 }
 
@@ -141,8 +141,8 @@ main {
     border: none;
     border-radius: 30px;
     margin: 10px 5px 10px 5px;
-    background-color: red;
-    color: white;
+    background-color: #FFAA5E;
+    color: #3A3A3A;
     font-weight: bold;
 }
 
@@ -155,16 +155,17 @@ main {
 ** POSTS 
 *******************************************************************************/
 #posts-div {
-    border: 2px solid rgb(0, 0, 0);
+    border: 2px solid #FFAA5E;
     border-radius: 30px;
-    background-color: rgb(31, 31, 31);
+    background-color: #a0c0d9;
     padding: 30px;
-    color: white;
+    color: #3A3A3A;
     width: 80%;
+    margin-bottom: 20px;
 }
 
 .posts-header {
-    color: white;
+    color: #3A3A3A;
     text-align: center;
     padding: 15px 0px;
 }
@@ -174,25 +175,52 @@ main {
 }
 
 .post__list__item {
-    border: 2px solid red;
+    border: 2px solid #FFAA5E;
     border-radius: 30px;
     padding: 20px;
     margin: 10px 0px;
 }
 
 .post__list__item__user {
-    color: white;
+    color: #3A3A3A;
     margin: 10px 0px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+}
+
+.post__list__item__delete {
+    width: 120px;
+    height: 40px;
+    border: none;
+    border-radius: 30px;
+    margin: 10px 5px 10px 5px;
+    background-color: #FFAA5E;
+    color: #3A3A3A;
     font-weight: bold;
 }
 
+.post__list__item__delete:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 19px -7px rgba(255,255,255,1);
+}
+
 .post__list__item__content {
-    color: white;
+    color: #3A3A3A;
     margin: 10px 0px;
 }
 
+.post__list__item__image {
+    border-radius: 20px;
+    margin-top: 20px;
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+}
+
 .post__list__item__date {
-    color: red;
+    color: #3A3A3A;
     margin: 10px 0px;
     text-align: end;
 }

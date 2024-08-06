@@ -6,8 +6,8 @@ class User {
     constructor(name, lastname, age, tel, password) {
         this.name = capitalize(name)
         this.lastname = capitalize(lastname)
-        this.age = age
-        this.tel = tel
+        this.age = Number(age)
+        this.tel = Number(tel)
         this.password = password
         this.posts = []
         
@@ -35,13 +35,14 @@ class User {
 
 class Post {
     /* Constructor de la clase */
-    constructor(id, username, email, tel, content) {
+    constructor(id, username, email, tel, content, img) {
         this.id = id
         this.username = username
         this.email = email
         this.tel = tel
         this.content = content
-        this.date = new Date(); // Guarda la fecha como un objeto Date
+        this.date = new Date() /* Guarda la fecha como un objeto Date */
+        this.img = img
     }
 }
 
@@ -68,24 +69,24 @@ function capitalize(str) {
 }
 
 function getFormattedDate(date) {
-    // Si la fecha es un string, la convierto a formato fecha
+    /* Si la fecha es un string, la convierto a formato fecha */
     if(typeof(date) === 'string') {
         date = new Date(date)
     }
     
-    // Obtener los componentes de la fecha y hora
-    const anio = date.getFullYear();
-    const mes = date.getMonth() + 1; // Los meses van de 0 a 11
-    const dia = date.getDate();
-    const horas = date.getHours();
-    const minutos = date.getMinutes();
-    const segundos = date.getSeconds();
+    /* Obtener los componentes de la fecha y hora */
+    const anio = date.getFullYear()
+    const mes = date.getMonth() + 1 /* Los meses van de 0 a 11 */
+    const dia = date.getDate()
+    const horas = date.getHours()
+    const minutos = date.getMinutes()
+    const segundos = date.getSeconds()
     
     return `${anio}-${mes}-${dia}T${horas}:${minutos}:${segundos}`
 }
 
 function sortPosts(posts, property, dir) {
-    // Ordeno los posts por fecha
+    /* Ordeno los posts por fecha */
     let arrayCopia = posts.map((el) => el)
     if(dir === 'asc') {
         return arrayCopia.sort((a,b) => {
@@ -138,6 +139,9 @@ function restar(num1, num2) {
 }
 
 function calcYearBirdth(age) {
+    if(typeof age !== 'number') {
+        age = Number(age)
+    }
     thisYear = 2024
     return restar(thisYear, age)
 }
@@ -259,6 +263,7 @@ function createUser() {
 function createPost() {
     /* Obtengo el contenido del post */
     let postContent = document.getElementById('post-content').value
+    let postImgSrc = document.getElementById('post-img').value
     
     /* NOTA: Se podria agregar contenido multimedia al post aca */
     
@@ -306,9 +311,9 @@ function createPost() {
     // console.log(maxID)
     
     /* Creo e objeto de tipo post */
-    let post = new Post(maxID+1, user.username, user.email, user.tel, postContent)
+    let post = new Post(maxID+1, user.username, user.email, user.tel, postContent, postImgSrc)
     
-    // Debug
+    /* Debug */
     // console.log(post)
     
     /* Agrego el post a la lista */
@@ -373,6 +378,28 @@ function deletePosts() {
     showScreen('show-posts')
 }
 
+function deleteSinglePost(id) {
+    /* Obtengo la lista de posteos */
+    let posts = loadPosts()
+    
+    /* Debug */
+    console.log(`Deleted post [${id}].`)
+    
+    /* Filtro */
+    let filteredPosts = posts.filter((post) => post.id != Number(id))
+    
+    /* Actualizo el Local Storage */
+    setJSONPosts(filteredPosts)
+    
+    /* Actualizo la lista de posteos */
+    updatePostsList(filteredPosts)
+    
+    /* Voy a la pagina principal de posteos */
+    showScreen('show-posts')
+    
+    return
+}
+
 function filterPosts(text) {
     /* Debug */
     // console.log(text)
@@ -382,7 +409,7 @@ function filterPosts(text) {
     
     /* Me aseguro que los posts tienen su fecha en formato fecha */
     for (let index = 0; index < posts.length; index++) {
-        let post = posts[index];
+        let post = posts[index]
         post.date = new Date(post.date)
     }
     
@@ -426,7 +453,7 @@ function filterPosts(text) {
         const filteredPosts = posts.filter((post) => {
             return post.date.getFullYear() === year &&
                     (post.date.getMonth() + 1) === month &&
-                    post.date.getDate() === day;
+                    post.date.getDate() === day
         })
         
         /* Actualizo la lista de posts */
@@ -438,7 +465,7 @@ function filterPosts(text) {
         /* Filtro los posts que necesito */
         const filteredPosts = posts.filter(
             (post) => post.content.toUpperCase().includes(text.toUpperCase())
-        );
+        )
         
         /* Actualizo la lista de posts */
         updatePostsList(filteredPosts)
@@ -448,12 +475,12 @@ function filterPosts(text) {
 
 function updatePostsList(posts) {
     /* Funcion para mostrar los posts en pantalla */
-    /* NOTA: Los posts no se van a mostrar en la pantall hasta que no salgamos
-    ** del ciclo while principal
-    **/
+    
+    /* Cargo el usuario actual */
+    let currentUser = JSON.parse(localStorage.getItem("currentUser"))
     
     /* Busco el elemento HTML que contiene la lista de posts */
-    let postsListContainer = document.getElementsByClassName('post__list')[0];
+    let postsListContainer = document.getElementsByClassName('post__list')[0]
     
     /* Ordeno los posts por fecha */
     let sortedPosts = sortPosts(posts, 'date', 'desc')
@@ -475,9 +502,11 @@ function updatePostsList(posts) {
         <li class="post__list__item">
             <div class="post__list__item__user">
                 <h3>(${post.id}) ${user.name} ${user.lastname}</h3>
+                ${currentUser.username == user.username ? `<button class="post__list__item__delete" id="delete-post-${post.id}">Borrar post</button>` : '' }
             </div>
             <div class="post__list__item__content">
                 <p>${post.content}</p>
+                ${post.img ? `<img src="${post.img}" class="post__list__item__image alt="Post Image">` : ''}
             </div>
             <div class="post__list__item__date">
                 <p>${getFormattedDate(post.date)}</p>
@@ -485,14 +514,25 @@ function updatePostsList(posts) {
         </li>
         `
     })
-    
+
+    /* Asigno la función al botón de borrar */
+    /* En principio quise hacer esto con getElementById pero internet dice
+    ** que es mejor usar querySelector porque selecciona con ID puede tener
+    ** fallas si el DOM todavia no termino de cargar.
+    **/
+    sortedPosts.forEach(post => {
+        let deletePostBtn = document.querySelector(`#delete-post-${post.id}`);
+        if (deletePostBtn) {
+            deletePostBtn.addEventListener('click', () => deleteSinglePost(post.id));
+        }
+    });
 }
 
 /*******************************************************************************
 ** SELECTOR DE PANTALLAS
 *******************************************************************************/
 function showScreen(screen) {
-    // Obtengo los elementos HTML
+    /* Obtengo los elementos HTML */
     let navBar = document.getElementsByClassName('nav-bar')[0]
     let logInDiv = document.getElementById('login-div')
     let createUserdiv = document.getElementById('create-user-div')
@@ -500,7 +540,7 @@ function showScreen(screen) {
     let createPostdiv = document.getElementById('create-post-div')
     let deletePostsDiv = document.getElementById('delete-post-div')
     
-    // Guardo esos elementos en un array
+    /* Guardo esos elementos en un array */
     divs = [
         navBar,
         logInDiv,
@@ -510,12 +550,12 @@ function showScreen(screen) {
         deletePostsDiv
     ]
     
-    // Oculto todos los elementos
+    /* Oculto todos los elementos */
     divs.forEach(div => {
         div.classList.add('hidden')
-    });
+    })
     
-    // Muestro lo que corresponda segun la pantalla
+    /* Muestro lo que corresponda segun la pantalla */
     if(screen === 'login') {
         logInDiv.classList.remove('hidden')
     }
@@ -552,7 +592,7 @@ function generateTestData() {
     
     let users = []
     for (let index = 0; index < test_users.length; index++) {
-        const element = test_users[index];
+        const element = test_users[index]
         
         /* Creo el usuario */
         let user = new User(element.name, element.surname, element.age, element.tel, element.password)
@@ -566,19 +606,19 @@ function generateTestData() {
     
     /* Genero mensajes de prueba */
     test_posts = [
-        {id: 1000, username: 'snieto',  email: 'snieto@hotmail.com', tel: 3512647957, content: 'Mensaje de prueba 1', date: '2024-01-01T10:06:20'},
-        {id: 1001, username: 'jperez',  email: 'jperez@hotmail.com', tel: 1234567089, content: 'Mensaje de prueba 2', date: '2024-03-21T11:03:10'},
-        {id: 1002, username: 'snieto',  email: 'nieto@hotmail.com',  tel: 3512647957, content: 'Mensaje de prueba 3', date: '2024-08-08T12:44:00'},
-        {id: 1003, username: 'alopez',  email: 'alopez@hotmail.com', tel: 3405678901, content: 'Mensaje de prueba 4', date: '2024-07-25T17:00:10'},
-        {id: 1004, username: 'alopez',  email: 'alopez@hotmail.com', tel: 4567891203, content: 'Mensaje de prueba 5', date: '2024-01-01T20:35:56'},
+        {id: 1000, username: 'snieto',  email: 'snieto@hotmail.com', tel: 3512647957, content: 'Mensaje de prueba 1', img: 'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0', date: '2024-01-01T10:06:20'},
+        {id: 1001, username: 'jperez',  email: 'jperez@hotmail.com', tel: 1234567089, content: 'Mensaje de prueba 2', img: '', date: '2024-03-21T11:03:10'},
+        {id: 1002, username: 'snieto',  email: 'nieto@hotmail.com',  tel: 3512647957, content: 'Mensaje de prueba 3', img: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e', date: '2024-08-08T12:44:00'},
+        {id: 1003, username: 'alopez',  email: 'alopez@hotmail.com', tel: 3405678901, content: 'Mensaje de prueba 4', img: '', date: '2024-07-25T17:00:10'},
+        {id: 1004, username: 'alopez',  email: 'alopez@hotmail.com', tel: 4567891203, content: 'Mensaje de prueba 5', img: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085', date: '2024-01-01T20:35:56'},
     ]
     
     let posts = []
     for (let index = 0; index < test_posts.length; index++) {
-        const element = test_posts[index];
+        const element = test_posts[index]
         
         /* Creo el usuario */
-        let post = new Post(element.id, element.username, element.email, element.tel, element.content)
+        let post = new Post(element.id, element.username, element.email, element.tel, element.content, element.img)
         
         /* Asigno la fecha personalizada al mensaje */
         /* NOTA: Busque en Google como hacer esto */
@@ -591,11 +631,11 @@ function generateTestData() {
         
     }
     
-    // Actualizo el Local Storage
+    /* Actualizo el Local Storage */
     setJSONUsers(users)
     setJSONPosts(posts)
     
-    // Mensaje de debug
+    /* Mensaje de debug */
     alert('Datos de prueba generados correctamente.')
     
 }
@@ -620,7 +660,7 @@ function addEvents() {
     
     let loginButton = document.getElementById('login-btn')
     loginButton.addEventListener('click', (e) => {
-        e.preventDefault() // Esto hay que sacarlo
+        e.preventDefault()
         logIn()
     })
     
