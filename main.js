@@ -404,6 +404,9 @@ function filterPosts(text) {
     /* Debug */
     // console.log(text)
     
+    /* Paso todo a mayusculas */
+    text = text.toUpperCase()
+    
     /* Obtengo la lista de posteos */
     let posts = loadPosts()
     
@@ -414,10 +417,10 @@ function filterPosts(text) {
     }
     
     /* Me fijo si tengo que filtrar por ID */
-    if(text.includes('id:')) {
+    if(text.includes('ID:')) {
         /* Filtro los posts que necesito */
         const filteredPosts = posts.filter(
-            (post) => post.id === Number(text.replace('id:',''))
+            (post) => post.id === Number(text.replace('ID:',''))
         )
         
         /* Actualizo la lista de posts */
@@ -425,10 +428,10 @@ function filterPosts(text) {
     }
     
     /* Me fijo si tengo que filtrar por usuario */
-    else if(text.includes('user:')) {
+    else if(text.includes('USER:')) {
         /* Filtro los posts que necesito */
         const userPosts = posts.filter(
-            (post) => post.username.toUpperCase().includes(text.replace('user:','').toUpperCase())
+            (post) => post.username.toUpperCase().includes(text.replace('USER:','').toUpperCase())
         )
         
         /* Actualizo la lista de posts */
@@ -436,10 +439,10 @@ function filterPosts(text) {
     }
     
     /* Me fijo si tengo que filtrar por fecha */
-    else if(text.includes('date:')) {
+    else if(text.includes('DATE:')) {
         
         /* Filtro la fecha */
-        let date = text.replace('date:','')
+        let date = text.replace('DATE:','')
         
         /* Obtengo los datos */
         let data = date.split('-')
