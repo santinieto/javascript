@@ -3,48 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pre-Entrega-2</title>
+    <title>Social App</title>
     
-    <!-- CSS -->
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./../styles.css">
 </head>
 <body>
-    <!-- Contendor de los posts -->
-    <div class="posts">
-        <h2 class="posts_header">Posts</h2>
-        
-        <!-- Lista de posts -->
-        <ul class="post__list">
-            
-            <!-- Post -->
-            <li class="post__list__item">
-                <div class="post__list__item__user">
-                    <h3>Nombre de usuario 1</h3>
-                </div>
-                <div class="post__list__item__content">
-                    <p>Mensaje de ejemplo 1</p>
-                </div>
-                <div class="post__list__item__date">
-                    <p>01/01/1980 10:35:02</p>
-                </div>
-            </li>
-            
-            <!-- Post -->
-            <li class="post__list__item">
-                <div class="post__list__item__user">
-                    <h3>Nombre de usuario 2</h3>
-                </div>
-                <div class="post__list__item__content">
-                    <p>Mensaje de ejemplo 2</p>
-                </div>
-                <div class="post__list__item__date">
-                    <p>01/01/1980 10:35:02</p>
-                </div>
-            </li>
-            
-        </ul>
-    </div>
+    <header>
+        <!-- Barra de navegacion -->
+        <nav class="nav-bar">
+            <div class="nav-bar-image">
+                <img src="https://img.atom.com/story_images/visual_images/1604156176-SocialApp-100.jpg?class=show" alt="Logo">
+            </div>
+            <div class="nav-bar-search-div">
+                <i class="fa-solid fa-magnifying-glass" style="color: #3a3a3a;"></i>
+                <input type="text" class="nav-bar__search" placeholder="Buscar">
+            </div>
+            <ul class="nav-bar-list">
+                <li class="nav-item">
+                    <button id="home-btn" class="nav-button">Incio</button>
+                </li>
+                <li class="nav-item">
+                    <button id="create-post-btn" class="nav-button">Postear</button>
+                </li>
+                <li class="nav-item">
+                    <button id="delete-post-btn" class="nav-button">Borrar Post</button>
+                </li>
+                <li class="nav-item">
+                    <button id="logout-btn" class="nav-button">Salir</button>
+                </li>
+            </ul>
+        </nav>
+    </header>
     
-    <script src="main.js"></script>
+    <main>
+        <!-- Formulario de logeo -->
+        <div id="login-div" class="">
+            <form action="" class="form">
+                <h2 class="form__header">Ingresar al sitio</h2>
+                <div class="form__field">
+                    <label for="username" class="form__field__label">Usuario</label>
+                    <input type="text" id="login-username" name="username" class="form__text">
+                </div>
+                <div class="form__field">
+                    <label for="password" class="form__field__label">Contraseña</label>
+                    <input type="password" id="login-password" name="password" class="form__text">
+                </div>
+                <div class="form__btns">
+                    <button id="create-user-btn" class="form__button">Crear usuario</button>
+                    <button id="login-btn" class="form__button">Ingresar</button>
+                    <button id="clear-local-storage-btn" class="form__button">Borrar Local Storage</button>
+                    <button id="create-test-data-btn" class="form__button">Generar datos de prueba</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Formulario de creacion de usuario -->
+        <div id="create-user-div" class="">
+            <form action="" class="form">
+                <h2 class="form__header">Creacion de usuario</h2>
+                <div class="form__field">
+                    <label for="name" class="form__field__label">Nombre</label>
+                    <input type="text" id="create-user-name" name="name" class="form__text">
+                </div>
+                <div class="form__field">
+                    <label for="lastname" class="form__field__label">Apellido</label>
+                    <input type="text" id="create-user-lastname" name="lastname" class="form__text">
+                </div>
+                <div class="form__field">
+                    <label for="age" class="form__field__label">Edad</label>
+                    <input type="number" id="create-user-age" name="age" class="form__text">
+                </div>
+                <div class="form__field">
+                    <label for="tel" class="form__field__label">Telefono</label>
+                    <input type="tel" id="create-user-tel" name="tel" class="form__text">
+                </div>
+                <div class="form__field">
+                    <label for="password" class="form__field__label">Contraseña</label>
+                    <input type="password" id="create-user-password" name="password" class="form__text">
+                </div>
+                <div class="form__btns">
+                    <button id="cancel-create-user-btn" class="form__button">Cancelar</button>
+                    <input id="confirm-create-user-btn" type="submit" value="Crear usuario" class="form__button">
+                </div>
+            </form>
+        </div>
+        
+        <!-- Seccion de posteos -->
+        <div id="posts-div" class="">
+            <h2 class="posts-header">Posts</h2>
+            <!-- Lista de posts -->
+            <ul class="post__list">
+            </ul>
+        </div>
+        
+        <!-- Crear posteo -->
+        <div id="create-post-div">
+            <form action="" class="form">
+                <div class="form__field">
+                    <label for="content" class="form__field__label">Contenido</label>
+                    <textarea rows="10" cols="50" id="post-content" name="content" class="form__textarea"></textarea>
+                </div>
+                <div class="form__field">
+                    <label for="img" class="form__field__label">URL de imagen imagen</label>
+                    <input type="text" id="post-img" name="img" class="form__text">
+                </div>
+                <div class="form__btns">
+                    <button id="cancel-create-post-btn" class="form__button">Cancelar</button>
+                    <input id="confirm-create-post-btn" type="submit" value="Crear post" class="form__button">
+                </div>
+            </form>
+        </div>
+        
+        <!-- Borrar posteo -->
+        <div id="delete-post-div">
+            <form action="" class="form">
+                <div class="form__field">
+                    <label for="text" class="form__field__label">IDs separados por ","</label>
+                    <input type="text" id="delete-ids" name="content" class="form__text">
+                </div>
+                <div class="form__btns">
+                    <button id="cancel-delete-post-btn" class="form__button">Cancelar</button>
+                    <input id="confirm-delete-post-btn" type="submit" value="Borrar posts" class="form__button">
+                </div>
+            </form>
+        </div>
+        
+    </main>
+    
+    <footer>
+        
+    </footer>
+    
+    <!-- FontAwesome -->
+    <script src="https://kit.fontawesome.com/8108aa3dd1.js" crossorigin="anonymous"></script>
+    
+    <!-- Mi script de JavaScript -->
+    <script src="./main.js" ></script>
 </body>
 </html>
