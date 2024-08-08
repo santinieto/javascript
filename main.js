@@ -82,7 +82,7 @@ function getFormattedDate(date) {
     const minutos = date.getMinutes()
     const segundos = date.getSeconds()
     
-    return `${anio}-${mes}-${dia}T${horas}:${minutos}:${segundos}`
+    return `${anio}/${mes}/${dia} ${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`
 }
 
 function sortPosts(posts, property, dir) {
@@ -667,6 +667,22 @@ function addEvents() {
         logIn()
     })
     
+    let loginUsernameText = document.getElementById('login-username')
+    loginUsernameText.addEventListener('keypress', (e) => {
+        if(e.code === 'Enter' || e.code === 'NumpadEnter') {
+            e.preventDefault()
+            logIn()
+        }
+    })
+    
+    let loginPasswordText = document.getElementById('login-password')
+    loginPasswordText.addEventListener('keypress', (e) => {
+        if(e.code === 'Enter' || e.code === 'NumpadEnter') {
+            e.preventDefault()
+            logIn()
+        }
+    })
+    
     let cancelButton = document.getElementById('cancel-create-user-btn')
     cancelButton.addEventListener('click', (e) => {
         e.preventDefault()
@@ -684,12 +700,25 @@ function addEvents() {
         }
     })
     
+    let createUserPasswordText = document.getElementById('create-user-password')
+    createUserPasswordText.addEventListener('keypress', (e) => {
+        if(e.code === 'Enter' || e.code === 'NumpadEnter') {
+            e.preventDefault()
+            if(createUser()){
+                showScreen('login')
+            }
+            else {
+                showScreen('create-user')
+            }
+        }
+    })
+    
     let clearLocalStorageButton = document.getElementById('clear-local-storage-btn')
     clearLocalStorageButton.addEventListener('click', (e) => {
         e.preventDefault()
         localStorage.clear()
+        alert('Datos borrados del Local Storage.')
         showScreen('login')
-        
     })
     
     let logOutButton = document.getElementById('logout-btn')

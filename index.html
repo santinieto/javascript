@@ -11,6 +11,13 @@
     <header>
         <!-- Barra de navegacion -->
         <nav class="nav-bar">
+            <div class="nav-bar-image">
+                <img src="https://img.atom.com/story_images/visual_images/1604156176-SocialApp-100.jpg?class=show" alt="Logo">
+            </div>
+            <div class="nav-bar-search-div">
+                <i class="fa-solid fa-magnifying-glass" style="color: #3a3a3a;"></i>
+                <input type="text" class="nav-bar__search" placeholder="Buscar">
+            </div>
             <ul class="nav-bar-list">
                 <li class="nav-item">
                     <button id="home-btn" class="nav-button">Incio</button>
@@ -24,7 +31,6 @@
                 <li class="nav-item">
                     <button id="logout-btn" class="nav-button">Salir</button>
                 </li>
-                <input type="text" class="nav-bar__search">
             </ul>
         </nav>
     </header>
@@ -95,7 +101,7 @@
             <form action="" class="form">
                 <div class="form__field">
                     <label for="content" class="form__field__label">Contenido</label>
-                    <input type="text" id="post-content" name="content" class="form__text">
+                    <textarea rows="10" cols="50" id="post-content" name="content" class="form__textarea"></textarea>
                 </div>
                 <div class="form__field">
                     <label for="img" class="form__field__label">URL de imagen imagen</label>
@@ -128,6 +134,10 @@
         
     </footer>
     
+    <!-- FontAwesome -->
+    <script src="https://kit.fontawesome.com/8108aa3dd1.js" crossorigin="anonymous"></script>
+    
+    <!-- Mi script de JavaScript -->
     <script src="./main.js" ></script>
 </body>
 </html>
