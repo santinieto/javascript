@@ -82,7 +82,7 @@ function getFormattedDate(date) {
     const minutos = date.getMinutes()
     const segundos = date.getSeconds()
     
-    return `${anio}/${mes}/${dia} ${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`
+    return `${anio.toString().padStart(2, '0')}/${mes.toString().padStart(2, '0')}/${horas.toString().padStart(2, '0')} ${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`
 }
 
 function sortPosts(posts, property, dir) {
