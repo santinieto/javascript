@@ -146,6 +146,31 @@ function calcYearBirdth(age) {
     return restar(thisYear, age)
 }
 
+function displayAlert(title='', text='', icon='', buttonText='', showConfirmButton=false, timer=5000) {
+    Swal.fire({
+        title: title, // Titlo del modal
+        text: text, // Texto del modal
+        icon: icon, // Icono del modal
+        confirmButtonText: buttonText,
+        showConfirmButton: showConfirmButton, // No muestra el boton
+        position: 'center', // Posicion
+        timer: timer // Tiempo para cerrar el cartel
+    })
+}
+
+function displayModal(text='', time=3000, style={}) {
+    Toastify({
+        text: text,
+        duration: time,
+        close: false,
+        style: style,
+        gravity: 'bottom', // Posicion 'top', 'bottom'
+        position: 'right', // 'left', 'center', 'right'
+        stopOnFocus: true, // Frena el contador cuando el mouse esta encima
+        onClick: function() {} // Funcion que se va a ejecutar si hacemos click
+    }).showToast()
+}
+
 /*******************************************************************************
 ** FUNCIONES
 *******************************************************************************/
@@ -194,8 +219,16 @@ function logIn() {
         localStorage.setItem('currentUser', currentUserJSON)
         
         /* Muestro el mensaje de logeo exitoso */
-        /* Lo saco porque es molesto */
-        // alert(`Logeo exitoso!`)
+        displayModal(
+            text = 'Logeo exitoso!',
+            time = 2000,
+            style = {
+                background: "linear-gradient(to right, #00b09b, #96c93d)", // Gradiente verde
+                color: "#fff", // Texto blanco
+                borderRadius: "5px", // Bordes redondeados
+                padding: "16px" // Espaciado interno
+            }
+        )
         
         /* Actualizo la lista de posteos */
         updatePostsList(loadPosts())
@@ -207,7 +240,16 @@ function logIn() {
     /* Muestro un mensaje de usuario o contraseña incorrectos */
     /* En este caso creo que vale la pena mostrar un alert */
     else {
-        alert(`Nombre de usuario o contraseña incorrectos.`)
+        displayModal(
+            text = 'Nombre de usuario o contraseña incorrectos.',
+            time = 2000,
+            style = {
+                background: "linear-gradient(to right, #ff5f6d, #ffc371)", // Gradiente rojo a naranja
+                color: "#fff", // Texto blanco
+                borderRadius: "5px", // Bordes redondeados
+                padding: "16px" // Espaciado interno
+            }
+        )
     }
 }
 
@@ -239,7 +281,16 @@ function createUser() {
     
     /* Si el usuario ya existe largo un alert */
     if(userExists){
-        alert(`El usuario [${user.username}] ya existe.`)
+        displayModal(
+            text = `El usuario [${user.username}] ya existe.`,
+            time = 2000,
+            style = {
+                background: "linear-gradient(to right, #ff5f6d, #ffc371)", // Gradiente rojo a naranja
+                color: "#fff", // Texto blanco
+                borderRadius: "5px", // Bordes redondeados
+                padding: "16px" // Espaciado interno
+            }
+        )
         
         /* El return me quedo de legado */
         return false
@@ -253,7 +304,13 @@ function createUser() {
         setJSONUsers(users)
         
         /* Confirmo la creacion exitosa del usuario */
-        alert(`Se ha creado el usuario [${user.username}] con exito.`)
+        displayAlert(
+            title = 'Genial',
+            text = `Se ha creado el usuario [${user.username}] con exito.`,
+            icon = 'success',
+            buttonText = 'Aceptar',
+            showConfirmButton = true
+        )
         
         /* El return me quedo de legado */
         return true
@@ -275,7 +332,16 @@ function createPost() {
     
     /* Si no estoy logeado, no puedo crear un post */
     if(!user){
-        alert('No se puede crear un post si no esta logeado.')
+        displayModal(
+            text = 'No se puede crear un post si no esta logeado.',
+            time = 2000,
+            style = {
+                background: "linear-gradient(to right, #ff5f6d, #ffc371)", // Gradiente rojo a naranja
+                color: "#fff", // Texto blanco
+                borderRadius: "5px", // Bordes redondeados
+                padding: "16px" // Espaciado interno
+            }
+        )
         return
     }
     
@@ -286,8 +352,12 @@ function createPost() {
     if (!user.isAdult)
     {
         yearBirdth = calcYearBirdth(user.age)
-        alert(
-            `El usuario [${user.username}] no esta habilitado para crear posts ya que nacio en [${yearBirdth}].`
+        displayAlert(
+            title = 'Oh no!',
+            text = `El usuario [${user.username}] no esta habilitado para crear posts ya que nacio en [${yearBirdth}].`,
+            icon = 'error',
+            buttonText = 'Aceptar',
+            showConfirmButton = true
         )
         return
     }
@@ -344,7 +414,16 @@ function deletePosts() {
     
     /* Si no estoy logeado, no puedo borrar posts */
     if(!user){
-        alert('No se puede borrar posts si no esta logeado.')
+        displayModal(
+            text = 'No se puede borrar posts si no esta logeado.',
+            time = 2000,
+            style = {
+                background: "linear-gradient(to right, #ff5f6d, #ffc371)", // Gradiente rojo a naranja
+                color: "#fff", // Texto blanco
+                borderRadius: "5px", // Bordes redondeados
+                padding: "16px" // Espaciado interno
+            }
+        )
         return
     }
     
@@ -363,7 +442,7 @@ function deletePosts() {
     
     /* Aviso de que se borraron posts con exito */
     if(posts.length != filteredPosts.length){
-        alert('Se borraron los posts con exito.')
+        displayModal(text='Se borraron los posts con exito.')
     }
     
     /* Tendria que notificar sobre los posts que no se pudieron borrar */
@@ -383,7 +462,10 @@ function deleteSinglePost(id) {
     let posts = loadPosts()
     
     /* Debug */
-    console.log(`Deleted post [${id}].`)
+    // console.log(`Deleted post [${id}].`)
+    
+    /* Muestro el mensaje apropiad */
+    displayModal(text=`Se borro el post ${id} con exito.`)
     
     /* Filtro */
     let filteredPosts = posts.filter((post) => post.id != Number(id))
@@ -582,16 +664,39 @@ function showScreen(screen) {
 /*******************************************************************************
 ** GENERAR DATOS DE PRUEBA
 *******************************************************************************/
-function generateTestData() {
+async function loadTestUsers() {
+    let test_users = [];
+    try {
+        const response = await fetch('./test_data/test_users.json');
+        if (!response.ok) {
+            throw new Error('Error al cargar el archivo JSON');
+        }
+        test_users = await response.json();
+        console.log('Usuarios cargados:', test_users);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+    return test_users;
+}
+
+async function loadTestPosts() {
+    let test_posts = [];
+    try {
+        const response = await fetch('./test_data/test_posts.json');
+        if (!response.ok) {
+            throw new Error('Error al cargar el archivo JSON');
+        }
+        test_posts = await response.json();
+        console.log('Usuarios cargados:', test_posts);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+    return test_posts;
+}
+
+async function generateTestData() {
     /* Genero usuarios de prueba */
-    test_users = [
-        {name: 'Admin',    surname: 'Admin',     age: 99, tel: 9999999999, password: 'admin'},
-        {name: 'Santiago', surname: 'Nieto',     age: 29, tel: 3512647957, password: '12345678'},
-        {name: 'Juan',     surname: 'Perez',     age: 22, tel: 1234567089, password: '12345678'},
-        {name: 'Pedro',    surname: 'Rodriguez', age: 12, tel: 2345067890, password: '12345678'},
-        {name: 'Lara',     surname: 'Suarez',    age: 15, tel: 3405678901, password: '12345678'},
-        {name: 'Ana',      surname: 'Lopez',     age: 25, tel: 4567891203, password: '12345678'},
-    ]
+    let test_users = await loadTestUsers()
     
     let users = []
     for (let index = 0; index < test_users.length; index++) {
@@ -604,17 +709,10 @@ function generateTestData() {
         if (user) {
             users.push(user)
         }
-        
     }
     
     /* Genero mensajes de prueba */
-    test_posts = [
-        {id: 1000, username: 'snieto',  email: 'snieto@hotmail.com', tel: 3512647957, content: 'Mensaje de prueba 1', img: 'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0', date: '2024-01-01T10:06:20'},
-        {id: 1001, username: 'jperez',  email: 'jperez@hotmail.com', tel: 1234567089, content: 'Mensaje de prueba 2', img: '', date: '2024-03-21T11:03:10'},
-        {id: 1002, username: 'snieto',  email: 'nieto@hotmail.com',  tel: 3512647957, content: 'Mensaje de prueba 3', img: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e', date: '2024-08-08T12:44:00'},
-        {id: 1003, username: 'alopez',  email: 'alopez@hotmail.com', tel: 3405678901, content: 'Mensaje de prueba 4', img: '', date: '2024-07-25T17:00:10'},
-        {id: 1004, username: 'alopez',  email: 'alopez@hotmail.com', tel: 4567891203, content: 'Mensaje de prueba 5', img: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085', date: '2024-01-01T20:35:56'},
-    ]
+    let test_posts = await loadTestPosts()
     
     let posts = []
     for (let index = 0; index < test_posts.length; index++) {
@@ -637,10 +735,6 @@ function generateTestData() {
     /* Actualizo el Local Storage */
     setJSONUsers(users)
     setJSONPosts(posts)
-    
-    /* Mensaje de debug */
-    alert('Datos de prueba generados correctamente.')
-    
 }
 
 /*******************************************************************************
@@ -717,7 +811,13 @@ function addEvents() {
     clearLocalStorageButton.addEventListener('click', (e) => {
         e.preventDefault()
         localStorage.clear()
-        alert('Datos borrados del Local Storage.')
+        displayAlert(
+            title = 'Notificacion',
+            text = 'Datos borrados del Local Storage.',
+            icon = 'info',
+            buttonText = 'Aceptar',
+            showConfirmButton = true
+        )
         showScreen('login')
     })
     
@@ -773,8 +873,16 @@ function addEvents() {
     })
     
     let createTestDataButton = document.getElementById('create-test-data-btn')
-    createTestDataButton.addEventListener('click', () => {
+    createTestDataButton.addEventListener('click', (e) => {
+        e.preventDefault()
         generateTestData()
+        displayAlert(
+            title = 'Notificacion',
+            text = 'Datos de prueba generados correctamente.',
+            icon = 'success',
+            buttonText = 'Aceptar',
+            showConfirmButton = true
+        )
         showScreen('login')
     })
 }
@@ -783,7 +891,22 @@ function addEvents() {
 ** FUNCION PRINCIPAL
 *******************************************************************************/
 function main() {
+    
+    /* Agrego los eventos del sitio*/
     addEvents()
-    showScreen('login')
+    
+    /* Verifico si ya ya un usuario logeado */
+    let user = JSON.parse(localStorage.getItem("currentUser"))
+    console.log(user)
+    if(user) {
+        /* Actualizo la lista de posteos */
+        updatePostsList(loadPosts())
+        
+        /* Voy a la pagina principal de posteos */
+        showScreen('show-posts')
+    }
+    else {
+        showScreen('login')
+    }
 }
 main()
