@@ -1,0 +1,72 @@
+[
+    {
+        "name": "Admin",
+        "surname": "Admin",
+        "age": 99,
+        "tel": 9999999999,
+        "password": "admin"
+    },
+    {
+        "name": "Santiago",
+        "surname": "Nieto",
+        "age": 29,
+        "tel": 3512647957,
+        "password": "12345678"
+    },
+    {
+        "name": "Juan",
+        "surname": "Perez",
+        "age": 22,
+        "tel": 1234567089,
+        "password": "12345678"
+    },
+    {
+        "name": "Pedro",
+        "surname": "Rodriguez",
+        "age": 12,
+        "tel": 2345067890,
+        "password": "12345678"
+    },
+    {
+        "name": "Lara",
+        "surname": "Suarez",
+        "age": 15,
+        "tel": 3405678901,
+        "password": "12345678"
+    },
+    {
+        "name": "Ana",
+        "surname": "Lopez",
+        "age": 25,
+        "tel": 4567891203,
+        "password": "12345678"
+    },
+    {
+        "name": "Nicholas",
+        "surname": "Marshall",
+        "age": 53,
+        "tel": "476.288.2887",
+        "password": "S)4+IBWq"
+    },
+    {
+        "name": "Karen",
+        "surname": "Flores",
+        "age": 92,
+        "tel": "391.704.2432x27149",
+        "password": "!1L9TyLu"
+    },
+    {
+        "name": "Melinda",
+        "surname": "White",
+        "age": 98,
+        "tel": "413.599.3905",
+        "password": "Vf#0W+Gh"
+    },
+    {
+        "name": "Kevin",
+        "surname": "Holmes",
+        "age": 72,
+        "tel": "633.983.7188x5010",
+        "password": "*L5EhmtQ"
+    }
+]
